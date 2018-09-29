@@ -7,6 +7,8 @@ jobs:
     steps:
       - checkout
 
+      - run: docker pull ojford/texlive:latest
+
       - run: docker build --tag=texlive .
 
       - run:
@@ -32,16 +34,17 @@ jobs:
       - run: docker load --input=texlive.tar
 
       - run:
-          name: Tag image
+          name: Tag & push if changed
           command: |
-            docker tag texlive "ojford/texlive:$(date +'%Y-%M-%d')"
-            docker tag texlive ojford/texlive:latest
+            docker pull ojford/texlive:latest
+            current_sha="$(docker inspect --format='{{ .Id }}' ojford/texlive:latest)"
+            if [ "$(docker inspect --format='{{ .Id }}' texlive)" != "$current_sha" ]; then
+                docker tag texlive "ojford/texlive:$(date +'%Y-%M-%d')"
+                docker tag texlive ojford/texlive:latest
 
-      - run:
-          name: Push image
-          command: |
-            echo "$DOCKERHUB_PSWD" | docker login --username=ojfordci --password-stdin
-            docker push ojford/texlive
+                echo "$DOCKERHUB_PSWD" | docker login --username=ojfordci --password-stdin
+                docker push ojford/texlive
+            fi
 
 workflows:
   version: 2
