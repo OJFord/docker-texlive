@@ -1,0 +1,66 @@
+version: 2
+
+jobs:
+  build:
+    machine: true
+
+    steps:
+      - checkout
+
+      - run: docker build --tag=texlive .
+
+      - run:
+         name: Test
+         command: docker run texlive lualatex --version
+
+      - run: docker save --output=image.tar
+
+      - save_cache:
+          key: texlive-{{ .Revision }}
+          paths:
+            - texlive.tar
+
+  push:
+    machine: true
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          key: texlive-{{ .Revision }}
+
+      - run: docker load --input=texlive.tar
+
+      - run:
+          name: Tag image
+          command: |
+            docker tag texlive "ojford/texlive:$(date +'%Y-%M-%d')"
+            docker tag texlive ojford/texlive:latest
+
+      - run:
+          name: Push image
+          command: |
+            echo "$DOCKERHUB_PSWD" | docker login --username=ojfordci --password-stdin
+            docker push ojford/texlive
+
+workflows:
+  version: 2
+
+  workflow:
+    jobs:
+      - build
+
+      - push:
+          filters:
+            branches:
+              only:
+                - master
+
+    triggers:
+      - schedule:
+          # Mondays at noon
+          cron: 0 12 * * 1 
+          filters:
+            branches:
+              only:
+                - master
