@@ -49,7 +49,19 @@ jobs:
 workflows:
   version: 2
 
-  workflow:
+  dockerfile-change:
+    jobs:
+      - build
+
+      - push:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
+
+  texlive-change:
     jobs:
       - build
 
