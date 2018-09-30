@@ -5,6 +5,8 @@ RUN tar -xf install-tl-*
 RUN apk add perl wget
 RUN cd install-tl-* && yes i | ./install-tl
 RUN mv /usr/local/texlive/$(find /usr/local/texlive -type d -maxdepth 1 -mindepth 1 -regex '.*/[0-9]*$' | cut -d/ -f5)/* /usr/local/texlive/
+
+ADD https://httpbin.org/uuid force-cache-invalidation
 RUN /usr/local/texlive/bin/x86_64-linuxmusl/tlmgr update --all
 
 FROM alpine:latest
