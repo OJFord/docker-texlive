@@ -1,6 +1,6 @@
 FROM alpine:latest as base
 
-RUN wget 'http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz'
+ADD http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz .
 RUN tar -xf install-tl-*
 RUN apk add perl wget
 RUN cd install-tl-* && yes i | ./install-tl
