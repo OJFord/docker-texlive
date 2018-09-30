@@ -14,5 +14,3 @@ COPY --from=base /usr/local/texlive /usr/local/texlive
 ENV INFOPATH "/usr/local/texlive/texmf-dist/doc/info:$INFOPATH"
 ENV MANPATH "/usr/local/texlive/texmf-dist/doc/man:$MANPATH"
 ENV PATH "/usr/local/texlive/bin/x86_64-linuxmusl:$PATH"
-
-ENTRYPOINT ["/bin/sh"]
