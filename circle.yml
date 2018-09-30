@@ -39,7 +39,7 @@ jobs:
             docker pull ojford/texlive:latest
             current_sha="$(docker inspect --format='{{ .Id }}' ojford/texlive:latest)"
             if [ "$(docker inspect --format='{{ .Id }}' texlive)" != "$current_sha" ]; then
-                docker tag texlive "ojford/texlive:$(date +'%Y-%M-%d')"
+                docker tag texlive "ojford/texlive:$(date +'%Y-%m-%d')"
                 docker tag texlive ojford/texlive:latest
 
                 echo "$DOCKERHUB_PSWD" | docker login --username=ojfordci --password-stdin
