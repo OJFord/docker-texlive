@@ -32,6 +32,12 @@ jobs:
           username: ojford
           password: ${{ secrets.CR_PAT }}
 
+      - name: Find current version date
+        run: |
+          docker pull ojford/texlive:latest
+          current_sha="$(docker inspect --format='{{ .Id }}' ojford/texlive:latest)"
+          echo "::set-output name=current_sha::$current_sha"
+
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
@@ -42,3 +48,13 @@ jobs:
           tags: |
             ojford/texlive:latest
             ghcr.io/ojford/texlive:latest
+
+      - name: Push new dated version if updated
+        run: |
+          if [ "$(docker inspect --format='{{ .Id }}' texlive)" != "$current_sha" ]; then
+            tag="$(date +'%Y-%m-%d')"
+            docker tag texlive "ojford/texlive:$tag"
+            docker tag texlive "ghcr.io/ojford/texlive:$tag"
+            docker push "ojford/texlive:$tag"
+            docker push "ghcr.io/ojford/texlive:$tag"
+          fi
