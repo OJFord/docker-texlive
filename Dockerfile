@@ -1,3 +1,4 @@
+LABEL org.opencontainers.image.source https://github.com/OJFord/docker-texlive
 FROM alpine:latest as base
 
 ADD http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz .
