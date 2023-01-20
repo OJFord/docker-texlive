@@ -36,7 +36,7 @@ jobs:
         run: |
           docker pull ojford/texlive:latest
           current_sha="$(docker inspect --format='{{ .Id }}' ojford/texlive:latest)"
-          echo "::set-output name=current_sha::$current_sha"
+          echo "current_sha=$current_sha" > "$GITHUB_OUTPUT"
 
       - name: Build and push
         uses: docker/build-push-action@v2
